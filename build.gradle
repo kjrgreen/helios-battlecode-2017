@@ -127,29 +127,8 @@ build.dependsOn('unpackClient')
 // On OS X and Linux:
 //   `./gradlew -PteamA=<team A bot> -PteamB=<team B bot> -Pmaps=<comma
 //   separated list of maps>`
-task runheadless(type: JavaExec, dependsOn: 'build') {
-    description 'Runs a match without starting the client.'
-    group 'battlecode'
-
-    main = 'battlecode.server.Main'
-    classpath = sourceSets.main.runtimeClasspath
-    args = ['-c=-']
-    jvmArgs = [
-        '-Dbc.server.mode=headless',
-        '-Dbc.server.map-path=maps',
-        '-Dbc.server.debug=true',
-        '-Dbc.engine.debug-methods=true',
-        '-Dbc.game.team-a='+project.property('teamA'),
-        '-Dbc.game.team-b='+project.property('teamB'),
-        '-Dbc.game.team-a.url='+sourceSets.main.output.classesDir,
-        '-Dbc.game.team-b.url='+sourceSets.main.output.classesDir,
-        '-Dbc.game.maps='+project.property('maps'),
-        '-Dbc.server.save-file=' + 'matches/' + project.property('teamA') + '-vs-' + project.property('teamB') + '-on-' + project.property('maps') + '.bc17'
-    ]
-}
-
 task run(type: JavaExec, dependsOn: 'build') {
-    description 'Runs a match, starting the client.'
+    description 'Runs a match without starting the client.'
     group 'battlecode'
 
     main = 'battlecode.server.Main'

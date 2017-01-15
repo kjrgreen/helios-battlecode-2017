@@ -4,7 +4,6 @@ import battlecode.common.Direction;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
 import battlecode.common.TreeInfo;
-import battlecode.common.MapLocation;
 
 public class Pathfinding {
 	public static Direction[] djikstra(RobotController rc, MapLocation destination, float step)
@@ -20,38 +19,56 @@ public class Pathfinding {
 		float leftmost = xloc - sensorradius;
 		float rightmost = xloc + sensorradius;
 		
-		TreeInfo[] trees = rc.senseNearbyTrees();
+		TreeInfo[] nearbyTrees = rc.senseNearbyTrees();
 		
 		int dimensions = (int) ((sensorradius*2)/step);
+
+		Vertex[][] nodes = new Vertex[dimensions][dimensions];
+
+		int counterY = 0;
+		int counterX = 0;
 		
-		Integer[][] nodes = new Integer[dimensions][dimensions];
-		
-		int countery = 0;
-		int counterx = 0;
-		
-		MapLocation templocation;
+		MapLocation nodeLocation;
 		
 		for(float y = bottommost;y <= topmost;y=y+step)
 		{
-			for(float x = leftmost;x <= topmost;x=x+step)
+			for(float x = leftmost;x <= rightmost;x=x+step)
 			{
-				templocation = new MapLocation(x, y);
-				if(rc.canSenseLocation(templocation))
+				nodeLocation = new MapLocation(x, y);
+				if(rc.canSenseLocation(nodeLocation))
 				{
-					nodes[counterx][countery] = 0;
-					for(TreeInfo foo : trees)
+					String nodeId = "(" + Integer.toString(counterX) + "," + Integer.toString(counterY) + ")";
+					Vertex node = new Vertex(nodeId, nodeLocation, 0);
+					nodes[counterX][counterY] = node;
+					for(TreeInfo tree : nearbyTrees)
 					{
-						if (templocation.isWithinDistance(foo.getLocation(), (foo.getRadius() + bodyradius)))
-								{
-									//Templocation is not occupiable by this unit; should be weighted accordingly
-									break;// !!!IF!!! only one tree can occlude one spot, otherwise add weights for each tree that occludes this node
-								}
-					}	
+						if (nodeLocation.isWithinDistance(tree.getLocation(), (tree.getRadius() + bodyradius)))
+						{
+							//Templocation is not occupiable by this unit; should be weighted accordingly
+							node.setWeight(10);
+							break;// !!!IF!!! only one tree can occlude one spot, otherwise add weights for each tree that occludes this node
+						}
+					}
 				}
-				counterx++;
+				else {
+					nodes[counterX][counterY] = null;
+				}
+				counterX++;
 			}
-			countery++;
+			counterY++;
 		}
+
+		int numberOfEdges = 3 * dimensions * dimensions - 6 * dimensions + 2;
+
+		Edge[] edges = new Edge[numberOfEdges];
+		int edgeCounter = 0;
+
+		for(int y = 0; y < dimensions; y++) {
+			for(int x = 0; x < dimensions; y++) {
+				
+			}
+		}
+
 		return null;
 	}
 

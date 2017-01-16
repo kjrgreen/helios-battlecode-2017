@@ -62,12 +62,27 @@ public class Pathfinding {
 
 		Edge[] edges = new Edge[numberOfEdges];
 		int edgeCounter = 0;
+		int edgeWeight = 1;  //test value for weigth, may have to be changed
 
 		for(int y = 0; y < dimensions; y++) {
 			for(int x = 0; x < dimensions; y++) {
-				
+				if(nodes[y][x] != null) {
+					if (y + 1 < dimensions && nodes[y+1][x] != null) {
+						String edgeId = Integer.toString(edgeCounter);
+						Edge edge = new Edge(edgeId, nodes[y][x], nodes[y + 1][x], edgeWeight);
+						edges[edgeCounter] = edge;
+						edgeCounter++;
+					}
+					if(x + 1 < dimensions && nodes[y][x+1] != null) {
+						String edgeId = Integer.toString(edgeCounter);
+						Edge edge = new Edge(edgeId, nodes[y][x], nodes[y][x+1], edgeWeight);
+						edges[edgeCounter] = edge;
+						edgeCounter++;
+					}
+				}
 			}
 		}
+
 
 		return null;
 	}

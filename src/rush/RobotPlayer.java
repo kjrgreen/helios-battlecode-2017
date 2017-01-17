@@ -1,12 +1,14 @@
 package rush;
 import battlecode.common.*;
-import skeleton.units.archon.Archon;
-import skeleton.units.gardener.Gardener;
-import skeleton.units.lumberjack.Lumberjack;
-import skeleton.units.scout.Scout;
-import skeleton.units.soldier.Soldier;
-import skeleton.units.tank.Tank;
+import rush.units.archon.Archon;
+import rush.units.gardener.Gardener;
+import rush.units.lumberjack.Lumberjack;
+import rush.units.scout.Scout;
+import rush.units.soldier.Soldier;
+import rush.units.tank.Tank;
 
+
+@SuppressWarnings("unused")
 public strictfp class RobotPlayer {
     static RobotController rc;
 
@@ -19,9 +21,11 @@ public strictfp class RobotPlayer {
         // This is the RobotController object. You use it to perform actions from this robot,
         // and to get information on its current status.
         RobotPlayer.rc = rc;
+        RobotType RobotType = rc.getType();
 
-       switch (rc.getType()) {
+       switch (RobotType) {
             case ARCHON:
+            	System.out.println("I know I'm an archon and will act accordingly.");
                 Archon.start(rc);
                 break;
             case GARDENER:
@@ -31,7 +35,8 @@ public strictfp class RobotPlayer {
                 Soldier.start(rc);
                 break;
             case LUMBERJACK:
-                Lumberjack.start(rc);
+                //Lumberjack.start(rc);//TODO UNCOMMENT ME
+                examplefuncsplayer.RobotPlayer.run(rc);//TODO DELETE ME
                 break;
             case SCOUT:
             	Scout.start(rc);

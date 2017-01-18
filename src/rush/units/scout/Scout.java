@@ -28,7 +28,7 @@ public class Scout {
 					} catch (GameActionException e) {
 						e.printStackTrace();
 					}
-				
+
 				if (rc.canFireSingleShot())
 				{
 					try {
@@ -113,9 +113,7 @@ public class Scout {
 				moveToLocation = new MapLocation(rng.nextFloat()*maxHeigth, rng.nextFloat()*maxWidth);
 			}
 			try {
-				if(rc.hasMoved()) {
-					rc.move(moveToLocation);
-				}
+				rc.move(moveToLocation);
 			} catch (GameActionException e) {
 				e.printStackTrace();
 			}

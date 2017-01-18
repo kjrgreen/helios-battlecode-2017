@@ -154,7 +154,7 @@ public class Pathfinding {
 		for (Edge edge : edges) {
 			if (edge.getSource().equals(node)
 					&& edge.getDestination().equals(target)) {
-				return edge.getWeight();
+				return edge.getWeight() + target.getWeight();
 			}
 		}
 		throw new RuntimeException("Should not happen");

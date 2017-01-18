@@ -28,6 +28,10 @@ public class Scout {
 				target = findtarget(sensedenemies, rc.getLocation());
 				if (rc.canMove(target.location))
 					try {
+						if (rc.hasMoved())
+						{
+							Clock.yield();
+						}
 						rc.move(target.location);
 					} catch (GameActionException e) {
 						e.printStackTrace();
@@ -94,9 +98,9 @@ public class Scout {
 			}
 			
 			//TODO: Pick closest tree (that we haven't previously pursued) to pursue.
-			
-			TreeInfo selectedTree = treesthatcontaincoins.get(0);
 			if (treesthatcontaincoins.size() != 0){
+			TreeInfo selectedTree = treesthatcontaincoins.get(0);
+
 				MapLocation ourlocation = rc.getLocation();
 				float distancetoselected = ourlocation.distanceTo(selectedTree.getLocation());
 				for(TreeInfo e : treesthatcontaincoins)
@@ -106,10 +110,14 @@ public class Scout {
 						distancetoselected = ourlocation.distanceTo(selectedTree.getLocation());
 						}
 				}
-			}
+
 			
 			if (rc.canMove(selectedTree.location))
 			{
+				if (rc.hasMoved())
+				{
+					Clock.yield();
+				}
 				try {
 					rc.move(selectedTree.location);
 				} catch (GameActionException e1) {
@@ -117,6 +125,7 @@ public class Scout {
 					e1.printStackTrace();
 				}
 				continue;
+			}
 			}
 			
 			//pick random direction, move in that direction. If moving in that direction

@@ -29,13 +29,14 @@ public class Gardener {
 	private static Team OUR_TEAM;
 	@SuppressWarnings("unused")
 	private static Team THEIR_TEAM;
-	private static ArrayList<TreeInfo> ownedtrees;
+	private static int ownedtrees;
 	@SuppressWarnings("unused")
 	private static MapLocation anchorLocation;
 
 	public static void start(RobotController rc) {
 		rng = new Random(rc.getRoundNum());
 		while (true) {
+			System.out.println("My state is:" + state.toString());
 			switch (state) {
 			case INITIAL:
 				initial(rc);
@@ -51,7 +52,7 @@ public class Gardener {
 	}
 
 	private static void farming(RobotController rc) {
-		if (ownedtrees.size() >= 8) {
+		if (ownedtrees >= 8) {
 			state = GardenerState.POST_FARMING;
 			return;
 		}
@@ -264,6 +265,7 @@ public class Gardener {
 					try {
 						planttreeandrecordit(rc, CommonMethods.allDirections()[foo]);
 						anchorLocation = rc.getLocation();
+						state = GardenerState.FARMING;
 						return;
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -272,7 +274,7 @@ public class Gardener {
 				}
 			}
 		}
-
+		
 	}
 
 	static void planttreeandrecordit(RobotController rc, Direction dir) throws Exception {
@@ -289,7 +291,8 @@ public class Gardener {
 			throw new Exception("Built one tree, found more than new trees");
 		// System.out.println(arrayListcurrentsensed.get(0));//Debug, show
 		// remaining tree
-		ownedtrees.add(arrayListcurrentsensed.get(0));
+		//ownedtrees.add(arrayListcurrentsensed.get(0));
+		ownedtrees++;
 	}
 
 }

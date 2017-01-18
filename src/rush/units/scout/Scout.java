@@ -98,9 +98,9 @@ public class Scout {
 			}
 			
 			//TODO: Pick closest tree (that we haven't previously pursued) to pursue.
-			if (treesthatcontaincoins.size() != 0){
+			
 			TreeInfo selectedTree = treesthatcontaincoins.get(0);
-
+			if (treesthatcontaincoins.size() != 0){
 				MapLocation ourlocation = rc.getLocation();
 				float distancetoselected = ourlocation.distanceTo(selectedTree.getLocation());
 				for(TreeInfo e : treesthatcontaincoins)
@@ -110,7 +110,7 @@ public class Scout {
 						distancetoselected = ourlocation.distanceTo(selectedTree.getLocation());
 						}
 				}
-
+			}
 			
 			if (rc.canMove(selectedTree.location))
 			{

@@ -113,7 +113,9 @@ public class Scout {
 				moveToLocation = new MapLocation(rng.nextFloat()*maxHeigth, rng.nextFloat()*maxWidth);
 			}
 			try {
-				rc.move(moveToLocation);
+				if(rc.hasMoved()) {
+					rc.move(moveToLocation);
+				}
 			} catch (GameActionException e) {
 				e.printStackTrace();
 			}

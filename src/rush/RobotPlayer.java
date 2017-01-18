@@ -36,7 +36,7 @@ public strictfp class RobotPlayer {
                 break;
             case LUMBERJACK:
                 //Lumberjack.start(rc);//TODO UNCOMMENT ME
-                examplefuncsplayer.RobotPlayer.run(rc);//TODO DELETE ME
+                //examplefuncsplayer.RobotPlayer.run(rc);//TODO DELETE ME
                 break;
             case SCOUT:
             	Scout.start(rc);

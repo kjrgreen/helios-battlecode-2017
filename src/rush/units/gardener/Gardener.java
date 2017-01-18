@@ -59,7 +59,46 @@ public class Gardener {
 		if (rc.getTeamBullets() >= GameConstants.BULLET_TREE_COST && canPlantInAnyDirection(rc)) {
 			// TODO path X distance (no more than 1/2 sensor width) from
 			// anchorLocation, then build planttreeandrecordit
-			return;
+			while (rc.getLocation().distanceTo(anchorLocation) < 4)
+			{
+				for(int x = 0; x!=10;x++)
+				{
+					int foo = rng.nextInt(4);
+					if (rc.canMove(CommonMethods.allDirections()[foo])) {
+						try {
+							rc.move(CommonMethods.allDirections()[foo]);
+							Clock.yield();
+						} catch (GameActionException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+				}
+			}
+			
+			//Plant tree
+			while (true) {
+				int foo = rng.nextInt(4);
+				if (rc.canMove(CommonMethods.allDirections()[foo])) {
+					if (rc.canPlantTree(CommonMethods.allDirections()[foo])) {
+						try {
+							planttreeandrecordit(rc, CommonMethods.allDirections()[foo]);
+							anchorLocation = rc.getLocation();
+							return;
+						} catch (Exception e) {
+							e.printStackTrace();
+							Clock.yield();
+						}
+					}
+					try {
+						rc.move(CommonMethods.allDirections()[foo]);
+						Clock.yield();
+					} catch (GameActionException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
 		}
 
 		// 100 is hardcoded cost of lumberjack
@@ -88,6 +127,18 @@ public class Gardener {
 		}
 		// TODO path to tree, follow path unless something fucks up. Have a
 		// counter so that we don't try to get to a tree we cannot reach for too long
+		// Hack: move towards it. If you get stuck and can't water it, move randomly. Try to move towards it again. Get stuck? You're SOL.
+		while(rc.canMove(targetTree.location))
+		{
+			try {
+				rc.move(targetTree.location);
+				Clock.yield();
+			} catch (GameActionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			Clock.yield();
+		}
 		
 		//Same code again, but for good reason. We wanted to water if we were already at the neediest tree. Now we're at it, for certain. Unless it died already. Then we'll just find a new tree or build.
 		if (rc.canInteractWithTree(targetTree.ID)) {
@@ -103,7 +154,47 @@ public class Gardener {
 				Clock.yield();
 			}
 		}
-
+		
+		for(int x = 0; x!=4;x++)
+		{
+			int foo = rng.nextInt(4);
+			if (rc.canMove(CommonMethods.allDirections()[foo])) {
+				try {
+					rc.move(CommonMethods.allDirections()[foo]);
+					Clock.yield();
+				} catch (GameActionException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		
+		while(rc.canMove(targetTree.location))
+		{
+			try {
+				rc.move(targetTree.location);
+				Clock.yield();
+			} catch (GameActionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			Clock.yield();
+		}
+		
+		//Same code again, but for good reason. We wanted to water if we were already at the neediest tree. Now we're at it, for certain. Unless it died already. Then we'll just find a new tree or build.
+		if (rc.canInteractWithTree(targetTree.ID)) {
+			while (true) {
+				if (rc.canWater()) {
+					try {
+						rc.water(targetTree.ID);
+						return;
+					} catch (GameActionException e) {
+						e.printStackTrace();
+					}
+				}
+				Clock.yield();
+			}
+		}
 	}
 
 	private static TreeInfo thirstiestTree(TreeInfo[] senseNearbyTrees) {
@@ -151,19 +242,17 @@ public class Gardener {
 			THEIR_TEAM = Team.A;
 
 		// TODO Find clear space to build in/around.
-
-		while (true) {
+		//Hack: move randomly for 9 turns.
+		for(int x = 0; x!=10;x++)
+		{
 			int foo = rng.nextInt(4);
 			if (rc.canMove(CommonMethods.allDirections()[foo])) {
-				if (rc.canBuildRobot(RobotType.SCOUT, CommonMethods.allDirections()[foo])) {
-					try {
-						rc.buildRobot(RobotType.SCOUT, CommonMethods.allDirections()[foo]);
-						state = GardenerState.FARMING;
-						break;
-					} catch (GameActionException e) {
-						e.printStackTrace();
-						Clock.yield();
-					}
+				try {
+					rc.move(CommonMethods.allDirections()[foo]);
+					Clock.yield();
+				} catch (GameActionException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 			}
 		}

@@ -117,7 +117,7 @@ public class Scout {
 			} catch (GameActionException e) {
 				e.printStackTrace();
 			}
-			Clock.yield();
+			Clock.yield()g;
 		}
 	}
 

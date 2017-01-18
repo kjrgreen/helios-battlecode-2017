@@ -2,15 +2,9 @@ package rush.units.scout;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Random;
 
-import battlecode.common.Clock;
-import battlecode.common.GameActionException;
-import battlecode.common.MapLocation;
-import battlecode.common.RobotController;
-import battlecode.common.RobotInfo;
-import battlecode.common.RobotType;
-import battlecode.common.Team;
-import battlecode.common.TreeInfo;
+import battlecode.common.*;
 
 public class Scout {
 	public static void start(RobotController rc) {
@@ -44,6 +38,7 @@ public class Scout {
 					}
 				}
 				//TODO message that you have engaged an (X), and the round number.
+
 				Clock.yield();
 				continue;
 			}
@@ -108,8 +103,21 @@ public class Scout {
 				continue;
 			}
 			
-			//TODO pick random direction, move in that direction. If moving in that direction
+			//pick random direction, move in that direction. If moving in that direction
 			//would move you off the map, pick a new random direction until you can go in that dir.
+			Random rng = new Random();
+			int maxHeigth = GameConstants.MAP_MAX_HEIGHT;
+			int maxWidth = GameConstants.MAP_MAX_WIDTH;
+			MapLocation moveToLocation = new MapLocation(rng.nextFloat()*maxHeigth, rng.nextFloat()*maxWidth);
+			while(!rc.canMove(moveToLocation)) {
+				moveToLocation = new MapLocation(rng.nextFloat()*maxHeigth, rng.nextFloat()*maxWidth);
+			}
+			try {
+				rc.move(moveToLocation);
+			} catch (GameActionException e) {
+				e.printStackTrace();
+			}
+			Clock.yield();
 		}
 	}
 

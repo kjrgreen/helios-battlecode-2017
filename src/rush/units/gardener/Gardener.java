@@ -36,7 +36,6 @@ public class Gardener {
 	public static void start(RobotController rc) {
 		rng = new Random(rc.getRoundNum());
 		while (true) {
-			System.out.println("My state is:" + state.toString());
 			switch (state) {
 			case INITIAL:
 				initial(rc);
@@ -52,20 +51,53 @@ public class Gardener {
 	}
 
 	private static void farming(RobotController rc) {
-		if (ownedtrees >= 8) {
-			state = GardenerState.POST_FARMING;
-			return;
-		}
-
-		if (rc.getTeamBullets() >= GameConstants.BULLET_TREE_COST && canPlantInAnyDirection(rc)) {
-			// TODO path X distance (no more than 1/2 sensor width) from
-			// anchorLocation, then build planttreeandrecordit
-			while (rc.getLocation().distanceTo(anchorLocation) < 4)
-			{
-				for(int x = 0; x!=10;x++)
+		TreeInfo targetTree = thirstiestTree(rc.senseNearbyTrees(-1, OUR_TEAM));
+		if (targetTree.health > GameConstants.BULLET_TREE_MAX_HEALTH/2)
+		{
+			// 100 is hardcoded cost of lumberjack
+			if (rc.getTeamBullets() >= 80 && canBuildRobotInAnyDirection(rc, RobotType.SCOUT)) {
+				try {
+					buildRobotInAnyDirection(rc, RobotType.SCOUT);
+				} catch (GameActionException e) {
+					e.printStackTrace();
+				}
+			}
+			
+			//Tree will be fine, build instead!
+			if (rc.getTeamBullets() >= GameConstants.BULLET_TREE_COST && canPlantInAnyDirection(rc)) {
+				// TODO path X distance (no more than 1/2 sensor width) from
+				// anchorLocation, then build planttreeandrecordit
+				while (rc.getLocation().distanceTo(anchorLocation) < 4)
 				{
+					for(int x = 0; x!=10;x++)
+					{
+						int foo = rng.nextInt(4);
+						if (rc.canMove(CommonMethods.allDirections()[foo])) {
+							try {
+								rc.move(CommonMethods.allDirections()[foo]);
+								Clock.yield();
+							} catch (GameActionException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
+					}
+				}
+				
+				//Plant tree
+				while (true) {
 					int foo = rng.nextInt(4);
 					if (rc.canMove(CommonMethods.allDirections()[foo])) {
+						if (rc.canPlantTree(CommonMethods.allDirections()[foo])) {
+							try {
+								planttreeandrecordit(rc, CommonMethods.allDirections()[foo]);
+								anchorLocation = rc.getLocation();
+								return;
+							} catch (Exception e) {
+								e.printStackTrace();
+								Clock.yield();
+							}
+						}
 						try {
 							rc.move(CommonMethods.allDirections()[foo]);
 							Clock.yield();
@@ -76,43 +108,11 @@ public class Gardener {
 					}
 				}
 			}
-			
-			//Plant tree
-			while (true) {
-				int foo = rng.nextInt(4);
-				if (rc.canMove(CommonMethods.allDirections()[foo])) {
-					if (rc.canPlantTree(CommonMethods.allDirections()[foo])) {
-						try {
-							planttreeandrecordit(rc, CommonMethods.allDirections()[foo]);
-							anchorLocation = rc.getLocation();
-							return;
-						} catch (Exception e) {
-							e.printStackTrace();
-							Clock.yield();
-						}
-					}
-					try {
-						rc.move(CommonMethods.allDirections()[foo]);
-						Clock.yield();
-					} catch (GameActionException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-			}
+			return;
 		}
-
-		// 100 is hardcoded cost of lumberjack
-		if (rc.getTeamBullets() >= 80 && canBuildRobotInAnyDirection(rc, RobotType.LUMBERJACK)) {
-			try {
-				buildRobotInAnyDirection(rc, RobotType.LUMBERJACK);
-			} catch (GameActionException e) {
-				e.printStackTrace();
-			}
-		}
-
-		TreeInfo targetTree = thirstiestTree(rc.senseNearbyTrees(-1, OUR_TEAM));
-
+		
+		//System.out.println("I feel like watering a tree. " + targetTree.toString());
+		
 		if (rc.canInteractWithTree(targetTree.ID)) {
 			while (true) {
 				if (rc.canWater()) {
@@ -126,6 +126,7 @@ public class Gardener {
 				Clock.yield();
 			}
 		}
+		
 		// TODO path to tree, follow path unless something fucks up. Have a
 		// counter so that we don't try to get to a tree we cannot reach for too long
 		// Hack: move towards it. If you get stuck and can't water it, move randomly. Try to move towards it again. Get stuck? You're SOL.

@@ -167,6 +167,26 @@ public class Archon {
 			}
 		}
 		
+		if (rc.getTeamBullets() > 200)
+		{
+			for(Direction e : CommonMethods.allDirections()){
+				if (rc.canHireGardener(e))
+					try {
+						rc.hireGardener(e);
+						state = ArchonState.COLLECTING;
+					} catch (GameActionException e1) {
+						System.out.println("I'm a " + rc.getType().toString()
+				        		+ " at " + new Float(rc.getLocation().x).toString() + ", " 
+				        		+ new Float(rc.getLocation().y).toString()
+				        		+ " and I cannot build a gardener. Please debug me! I'm now yielding two turns then exploding. 34984"); //Last few digits should help debugging.
+				        Clock.yield();
+				        Clock.yield();
+				        rc.disintegrate();
+					}
+			//TODO: Do something to try to find a place to build.
+			}
+		}
+		
 		
 		//TODO: Wander
 	}

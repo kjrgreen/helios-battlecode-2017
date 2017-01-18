@@ -23,7 +23,7 @@ public class Scout {
 		while (true) {
 			sensedenemies = rc.senseNearbyRobots(-1, THEIR_TEAM);
 			target = null;
-			
+
 			if (sensedenemies.length != 0) {
 				target = findtarget(sensedenemies, rc.getLocation());
 				if (rc.canMove(target.location))
@@ -58,11 +58,11 @@ public class Scout {
 				Clock.yield();
 				continue;
 			}
-			
+
 			//Check for trees
 			TreeInfo[] sensedtrees = rc.senseNearbyTrees();
 			ArrayList<TreeInfo> treesthatcontaincoins = new ArrayList<TreeInfo>();
-			
+
 			//Do any contain coins?
 			for (TreeInfo e : sensedtrees)
 			{
@@ -71,30 +71,30 @@ public class Scout {
 					treesthatcontaincoins.add(e);
 				}
 			}
-			
-			
+
+
 			//Can any of these coin-containing trees be can be shaken already?
 			if (treesthatcontaincoins.size() != 0)
 			{
 				if (!(rc.canShake())) Clock.yield();//If we have already shaken, we should wait until we can shake.
-				for(TreeInfo it: treesthatcontaincoins){
-
-					if (rc.canInteractWithTree(it.ID))
+				for(Iterator<TreeInfo> it = treesthatcontaincoins.iterator(); it.hasNext();){
+					TreeInfo e = it.next();
+					if (rc.canInteractWithTree(e.ID))
 					{
 						if (!(rc.canShake())) Clock.yield();//If we have already shaken, we should wait until we can shake.
 						try {
-							rc.shake(it.ID);
-							treesthatcontaincoins.remove(it); //Tree obviously does no longer contain coins, remove it.
+							rc.shake(e.ID);
+							it.remove(); //Tree obviously does no longer contain coins, remove it.
 						} catch (GameActionException e1) {
 							e1.printStackTrace();
 						}
 					}
 				}
-				
+
 			}
-			
+
 			//TODO: Pick closest tree (that we haven't previously pursued) to pursue.
-			
+
 			TreeInfo selectedTree = treesthatcontaincoins.get(0);
 			if (treesthatcontaincoins.size() != 0){
 				MapLocation ourlocation = rc.getLocation();
@@ -104,10 +104,10 @@ public class Scout {
 					if (ourlocation.distanceTo(e.getLocation()) < distancetoselected){
 						selectedTree = e;
 						distancetoselected = ourlocation.distanceTo(selectedTree.getLocation());
-						}
+					}
 				}
 			}
-			
+
 			if (rc.canMove(selectedTree.location))
 			{
 				try {
@@ -118,7 +118,7 @@ public class Scout {
 				}
 				continue;
 			}
-			
+
 			//pick random direction, move in that direction. If moving in that direction
 			//would move you off the map, pick a new random direction until you can go in that dir.
 			MapLocation moveToLocation = new MapLocation(rng.nextFloat()*maxHeigth, rng.nextFloat()*maxWidth);
@@ -170,7 +170,7 @@ public class Scout {
 			}
 
 		}
-		
+
 		return target;
 	}
 }

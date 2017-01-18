@@ -63,7 +63,7 @@ public class Gardener {
 		}
 
 		// 100 is hardcoded cost of lumberjack
-		if (rc.getTeamBullets() >= 100 && canBuildRobotInAnyDirection(rc, RobotType.LUMBERJACK)) {
+		if (rc.getTeamBullets() >= 80 && canBuildRobotInAnyDirection(rc, RobotType.LUMBERJACK)) {
 			try {
 				buildRobotInAnyDirection(rc, RobotType.LUMBERJACK);
 			} catch (GameActionException e) {
@@ -155,9 +155,9 @@ public class Gardener {
 		while (true) {
 			int foo = rng.nextInt(4);
 			if (rc.canMove(CommonMethods.allDirections()[foo])) {
-				if (rc.canBuildRobot(RobotType.LUMBERJACK, CommonMethods.allDirections()[foo])) {
+				if (rc.canBuildRobot(RobotType.SCOUT, CommonMethods.allDirections()[foo])) {
 					try {
-						rc.buildRobot(RobotType.LUMBERJACK, CommonMethods.allDirections()[foo]);
+						rc.buildRobot(RobotType.SCOUT, CommonMethods.allDirections()[foo]);
 						state = GardenerState.FARMING;
 						break;
 					} catch (GameActionException e) {

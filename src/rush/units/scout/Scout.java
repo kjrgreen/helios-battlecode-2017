@@ -8,6 +8,10 @@ import battlecode.common.*;
 
 public class Scout {
 	public static void start(RobotController rc) {
+		Random rng = new Random();
+		int maxHeigth = GameConstants.MAP_MAX_HEIGHT;
+		int maxWidth = GameConstants.MAP_MAX_WIDTH;
+
 		Team OUR_TEAM = rc.getTeam();
 		Team THEIR_TEAM = null;
 		if (OUR_TEAM == Team.A)
@@ -28,7 +32,19 @@ public class Scout {
 					} catch (GameActionException e) {
 						e.printStackTrace();
 					}
-				
+				else {
+					MapLocation moveToLocation = new MapLocation(rng.nextFloat()*maxHeigth, rng.nextFloat()*maxWidth);
+					while(!rc.canMove(moveToLocation)) {
+						moveToLocation = new MapLocation(rng.nextFloat()*maxHeigth, rng.nextFloat()*maxWidth);
+					}
+					try {
+						if(!rc.hasMoved()) {
+							rc.move(moveToLocation);
+						}
+					} catch (GameActionException e) {
+						e.printStackTrace();
+					}
+				}
 				if (rc.canFireSingleShot())
 				{
 					try {
@@ -105,15 +121,12 @@ public class Scout {
 			
 			//pick random direction, move in that direction. If moving in that direction
 			//would move you off the map, pick a new random direction until you can go in that dir.
-			Random rng = new Random();
-			int maxHeigth = GameConstants.MAP_MAX_HEIGHT;
-			int maxWidth = GameConstants.MAP_MAX_WIDTH;
 			MapLocation moveToLocation = new MapLocation(rng.nextFloat()*maxHeigth, rng.nextFloat()*maxWidth);
 			while(!rc.canMove(moveToLocation)) {
 				moveToLocation = new MapLocation(rng.nextFloat()*maxHeigth, rng.nextFloat()*maxWidth);
 			}
 			try {
-				if(!(rc.hasMoved())) {
+				if(!rc.hasMoved()) {
 					rc.move(moveToLocation);
 				}
 			} catch (GameActionException e) {

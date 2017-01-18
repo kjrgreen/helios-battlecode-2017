@@ -77,14 +77,14 @@ public class Scout {
 			if (treesthatcontaincoins.size() != 0)
 			{
 				if (!(rc.canShake())) Clock.yield();//If we have already shaken, we should wait until we can shake.
-				for(Iterator<TreeInfo> it = treesthatcontaincoins.iterator(); it.hasNext();){
-					TreeInfo e = it.next();
-					if (rc.canInteractWithTree(e.ID))
+				for(TreeInfo it: treesthatcontaincoins){
+
+					if (rc.canInteractWithTree(it.ID))
 					{
 						if (!(rc.canShake())) Clock.yield();//If we have already shaken, we should wait until we can shake.
 						try {
-							rc.shake(e.ID);
-							it.remove(); //Tree obviously does no longer contain coins, remove it.
+							rc.shake(it.ID);
+							treesthatcontaincoins.remove(it); //Tree obviously does no longer contain coins, remove it.
 						} catch (GameActionException e1) {
 							e1.printStackTrace();
 						}

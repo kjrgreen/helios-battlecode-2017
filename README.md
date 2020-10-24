@@ -1,3 +1,5 @@
+This was a project wherein me and a good friend took on the MIT battlecode challenge. 2017 involved controlling units for an RTS-like game (think Starcraft). In summary, we didn't get too far, and our prized implementation of A* pathfinding was so thorough that the limits on computation ended up only allowing two units pathfind to one destination each before the game was over. For reference, games usually involved at the absolute minimum 10-20 units, but often as many as 100 per side. All in all, it was a fun exercise in writing code strategically for a novel challenge and under tight time constraints. We learned a lot and I'd love to take part in battlecode another year.
+
 Battlecode Project Scaffold
 ===========================
 
